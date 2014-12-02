@@ -11,6 +11,13 @@ void printConnections(adjNode* listHead) {
     }
 }
 
+void printNodeAndConnections(graphNode* graphHead) {
+    printf("This is vertex %s with id %d. It's connected to these vertices:\n",
+            graphHead->name, graphHead->id);
+    printConnections(graphHead->adjHead);
+
+}
+
 void pushAdjNode(adjNode** listHead, int newID, int newDistance) {
     adjNode* newNode  = malloc(sizeof(adjNode));
     newNode->id       = newID;
@@ -39,3 +46,26 @@ void pushSortedAdjNode(adjNode** listHead, int newID, int newDistance) {
     (*listHead)->next = newNode;
     *listHead         = temp;
 }
+
+void pushVertex(graphNode** graphHead, int newID, char* cstring) {
+    graphNode* newNode  = malloc(sizeof(graphNode));
+    newNode->id         = newID;
+    newNode->name       = malloc(sizeof(char)*strlen(cstring)+1);
+    strcpy(newNode->name, cstring);
+
+    newNode->next  = *graphHead;
+    *graphHead     = newNode;
+
+    return;
+}
+
+
+
+
+
+
+
+
+
+
+

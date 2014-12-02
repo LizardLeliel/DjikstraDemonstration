@@ -23,7 +23,21 @@ int main()
     pushSortedAdjNode(&anotherTest, 11, 33);
     pushSortedAdjNode(&anotherTest, 12, 23);
     pushSortedAdjNode(&anotherTest, 13, 20);
-    printConnections(anotherTest);
+    printConnections(anotherTest); printf("\n\n");
+
+    graphNode* graphTest = NULL;
+    pushVertex(&graphTest, 3, "Hello, world!");
+    pushVertex(&graphTest, 2, "Rexcalibur");
+
+    graphTest->adjHead = anotherTest;
+
+    printNodeAndConnections(graphTest); printf("\n\n");
+
+    pushVertex(&graphTest, 4, "Megidolaon");
+    graphTest->adjHead = test;
+
+    printNodeAndConnections(graphTest); printf("\n");
+    printNodeAndConnections(graphTest->next); printf("\n\n");
 
     return 0;
 }

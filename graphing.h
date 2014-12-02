@@ -10,17 +10,20 @@ typedef struct ConnectionNode {
 
 typedef struct VertexNode {
     int id;
+    char* name;
+
     adjNode* adjHead;
     struct VertexNode* next;
 } graphNode;
 
 /* == Base functions == */
 void printConnections(adjNode* listHead);
+void printNodeAndConnections(graphNode* graphHead);
 /* pushAdhNode is legacy */
 void pushAdjNode(adjNode** listHead, int newID, int newDistance);
 void pushSortedAdjNode(adjNode** listHead, int newID, int newDistance);
-void pushVertex(graphNode** graphHead, int newID);
-bool existantVertext(graphNode** graphHead, int newID);
+void pushVertex(graphNode** graphHead, int newID, char* cstring);
+bool existantVertex(graphNode** graphHead, int newID);
 void pushUniqueVertex(graphNode** graphHead, int newID);
 void connectVertices(graphNode* head, int idOne, int idTwo, int distance);
 
