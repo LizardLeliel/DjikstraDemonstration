@@ -16,15 +16,21 @@ typedef struct VertexNode {
     struct VertexNode* next;
 } graphNode;
 
-/* == Base functions == */
+/* Print functions */
 void printConnections(adjNode* listHead);
 void printNodeAndConnections(graphNode* graphHead);
-/* pushAdhNode is legacy */
+
+/* Basic pushing */
 void pushAdjNode(adjNode** listHead, int newID, int newDistance);
 void pushSortedAdjNode(adjNode** listHead, int newID, int newDistance);
-void pushVertex(graphNode** graphHead, int newID, char* cstring);
-bool existantVertex(graphNode** graphHead, int newID);
-void pushUniqueVertex(graphNode** graphHead, int newID);
+void pushVertex(graphNode** graphHead, int newID, const char* cstring);
+
+/* Existance checking */
+bool existantIDVertex(graphNode* graphHead, int newID);
+bool existantNamedVertex(graphNode* graphHead, const char* cstring);
+
+/* Implementation functions */
+void pushUniqueVertex(graphNode** graphHead, int newID, const char* cstring);
 void connectVertices(graphNode* head, int idOne, int idTwo, int distance);
 
 
