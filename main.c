@@ -8,10 +8,11 @@
 int main()
 {
     printf("Hello world!\n");
-    idInit();
+    idStackInit();
 
-    basicGraphAndSampleLists();
-    basicFreeIDSample();
+    //basicGraphAndSampleLists();
+    //basicFreeIDSample();
+    basicGraph2();
 
     return 0;
 }

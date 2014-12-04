@@ -30,10 +30,13 @@ bool existantIDVertex(graphNode* graphHead, int newID);
 bool existantNamedVertex(graphNode* graphHead, const char* cstring);
 
 /* Implementation functions */
-void pushUniqueVertex(graphNode** graphHead, int newID, const char* cstring);
-void connectVertices(graphNode* head, int idOne, int idTwo, int distance);
+int pushUniqueVertex(graphNode** graphHead, const char* cstring);
+void linkVertices(graphNode* head, int idOne, int idTwo, int distance);
 
-
+/* Removal functions */
+void severLink(graphNode* head, int idOne, int idTwo, int distance);
+void deleteVertex(graphNode* head, int target);
+void deleteVertextAndLinks(graphNode* head, int target);
 
 
 

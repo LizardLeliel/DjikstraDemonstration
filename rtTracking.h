@@ -9,12 +9,13 @@
 typedef struct RemovedIDs {
     int unused;
     struct RemovedIDs* next;
-} availbleIDs;
+} availableIDs;
 
 void idStackInit();
-void pushAvailbleIDs(int n);
-unsigned int popAvailbleIDs();
-availbleIDs* returnFreeIDs();
+void pushAvailableIDs(int n);
+unsigned int nextAvailableIDs();
+availableIDs* returnFreeIDs();
+
 
 #define TRACKING_HEADER
 #endif

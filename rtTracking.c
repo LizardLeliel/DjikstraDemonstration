@@ -2,30 +2,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-availbleIDs* freeIDs;
+availableIDs* freeIDs;
 unsigned int nextAvailable;
 
-void idInit() {
+void idStackInit() {
     freeIDs = NULL;
-    nextAvailable = 1;
+    nextAvailable = 0;
 }
 
-void pushAvailbleIDs(int n) {
-    availbleIDs* newID = malloc(sizeof(availbleIDs));
+void pushAvailableIDs(int n) {
+    availableIDs* newID = malloc(sizeof(availableIDs));
     newID->unused = n;
     newID->next   = freeIDs;
     freeIDs       = newID;
 }
 
-unsigned int popAvailbleIDs() {
-    if (!freeIDs) return 0; /*Stack is null*/
+unsigned int nextAvailableIDs() {
+    if (!freeIDs) return ++nextAvailable;
 
     unsigned int returnVal;
     returnVal = freeIDs->unused;
     freeIDs   = freeIDs->next;
     return returnVal;
-}
-
-availbleIDs* returnFreeIDs() {
-    return freeIDs;
 }

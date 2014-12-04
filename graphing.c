@@ -51,9 +51,11 @@ void pushSortedAdjNode(adjNode** listHead, int newID, int newDistance) {
 }
 
 void pushVertex(graphNode** graphHead, int newID, const char* cstring) {
+    printf("Pushing %s\n", cstring);
     graphNode* newNode  = malloc(sizeof(graphNode));
     newNode->id         = newID;
     newNode->name       = malloc(sizeof(char)*strlen(cstring)+1);
+    newNode->adjHead    = NULL;
     strcpy(newNode->name, cstring);
 
     newNode->next  = *graphHead;
@@ -64,6 +66,7 @@ void pushVertex(graphNode** graphHead, int newID, const char* cstring) {
 
 /* ==== Existance checking ==== */
 bool existantNamedVertex(graphNode* graphHead, const char* cstring) {
+    if (graphHead == NULL) return false; /* Graph has no names */
     while (graphHead != NULL && strcmp(cstring, graphHead->name)) {
         graphHead = graphHead->next;
     }
@@ -72,6 +75,12 @@ bool existantNamedVertex(graphNode* graphHead, const char* cstring) {
     * NULL, or false. Else, it did sucessfully match, and graphHead will be
     * a valid pointer, thus being true */
 
+}
+
+int pushUniqueVertex(graphNode** graphHead, const char* cstring) {
+    if (existantNamedVertex(*graphHead, cstring)) return 1; /* Already existed */
+    pushVertex(graphHead, nextAvailableIDs(), cstring);
+    return 0;
 }
 
 

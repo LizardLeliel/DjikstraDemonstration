@@ -46,11 +46,31 @@ void basicGraphAndSampleLists() {
 }
 
 void basicFreeIDSample() {
-    pushAvailbleIDs(22);
-    pushAvailbleIDs(5);
-    pushAvailbleIDs(17);
+    pushAvailableIDs(22);
+    pushAvailableIDs(5);
+    pushAvailableIDs(17);
     printf("%d %d %d",
-    popAvailbleIDs(),
-    popAvailbleIDs(),
-    popAvailbleIDs());
+      nextAvailableIDs(),
+      nextAvailableIDs(),
+      nextAvailableIDs());
+}
+
+void basicGraph2() {
+    graphNode* testGraph = NULL;
+
+    pushUniqueVertex(&testGraph, "Graph1");
+    pushUniqueVertex(&testGraph, "Graph2");
+    if (pushUniqueVertex(&testGraph, "Graph3")) printf("Sucess\n");
+    else printf("Fail\n");
+    if (pushUniqueVertex(&testGraph, "Graph1")) printf("Sucess\n\n\n");
+    else printf("Fail\n\n\n");
+
+    pushUniqueVertex(&testGraph, "Graph4");
+
+    printNodeAndConnections(testGraph);
+    printf("\nNodes which exist: %s, %s, %s, %s\n", testGraph->name,
+      testGraph->next->name, testGraph->next->next->name,
+      testGraph->next->next->next->name);
+
+
 }
