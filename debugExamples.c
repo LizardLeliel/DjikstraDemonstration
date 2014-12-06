@@ -62,15 +62,33 @@ void basicGraph2() {
     pushUniqueVertex(&testGraph, "Graph2");
     if (pushUniqueVertex(&testGraph, "Graph3")) printf("Sucess\n");
     else printf("Fail\n");
-    if (pushUniqueVertex(&testGraph, "Graph1")) printf("Sucess\n\n\n");
-    else printf("Fail\n\n\n");
+    if (pushUniqueVertex(&testGraph, "Graph1")) printf("Sucess\n");
+    else printf("Fail\n");
 
     pushUniqueVertex(&testGraph, "Graph4");
+
+    printf("\n\n");
 
     printNodeAndConnections(testGraph);
     printf("\nNodes which exist: %s, %s, %s, %s\n", testGraph->name,
       testGraph->next->name, testGraph->next->next->name,
       testGraph->next->next->next->name);
+
+    printf("Their ids: %d %d %d %d\n", testGraph->id,
+      testGraph->next->id, testGraph->next->next->id,
+      testGraph->next->next->next->id);
+
+    printf("%d\n", linkVertices(testGraph, 3, 4, 25));
+    linkVertices(testGraph, 4, 2, 12);
+    linkVertices(testGraph, 4, 1, 13);
+
+    printNodeAndConnections(testGraph); printf("\n");
+    printNodeAndConnections(testGraph->next); printf("\n");
+
+    linkByName(testGraph, "Graph3", "Graph1", 95);
+
+    printNodeAndConnections(testGraph->next);
+
 
 
 }

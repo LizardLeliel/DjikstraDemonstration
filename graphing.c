@@ -1,4 +1,5 @@
 #include "graphing.h"
+#include "rtTracking.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -78,12 +79,55 @@ bool existantNamedVertex(graphNode* graphHead, const char* cstring) {
 }
 
 int pushUniqueVertex(graphNode** graphHead, const char* cstring) {
-    if (existantNamedVertex(*graphHead, cstring)) return 1; /* Already existed */
+    if (existantNamedVertex(*graphHead, cstring)) return 1; /*Already exists*/
     pushVertex(graphHead, nextAvailableIDs(), cstring);
     return 0;
 }
 
+int linkVertices(graphNode* graphHead, int idOne, int idTwo, int distance) {
+    if (idOne == idTwo) return 1; /* Same nodes */
+    adjNode** head1 = NULL;
+    adjNode** head2 = NULL;
 
+    while (!(head1 && head2)) {
+        if (graphHead == NULL) return 2; /* graphHead reaches end - node not found */
+
+        if (graphHead->id == idOne)
+            head1 = &(graphHead->adjHead);
+        if (graphHead->id == idTwo)
+            head2 = &(graphHead->adjHead);
+
+        graphHead = graphHead->next;
+    }
+    pushSortedAdjNode(head1, idOne, distance);
+    pushSortedAdjNode(head2, idTwo, distance);
+    return 0;
+}
+
+int linkByName(graphNode* graphHead, const char* nameOne, const char* nameTwo,
+  int distance) {
+    if (!strcmp(nameOne, nameTwo)) return 1; /* Same nodes */
+    int idOne, idTwo;
+    adjNode** head1 = NULL;
+    adjNode** head2 = NULL;
+
+    while (!(head1 && head2)) {
+        if (graphHead == NULL) return 2; /* graphHead reaches end - node not found */
+
+        if (!(strcmp(nameOne, graphHead->name))) {
+            head1 = &(graphHead->adjHead);
+            idOne = graphHead->id;
+        }
+        if (!(strcmp(nameTwo, graphHead->name))) {
+            head2 = &(graphHead->adjHead);
+            idTwo = graphHead->id;
+        }
+        graphHead = graphHead->next;
+    }
+    pushSortedAdjNode(head1, idOne, distance);
+    pushSortedAdjNode(head2, idTwo, distance);
+    return 0;
+}
 
 
 

@@ -31,7 +31,10 @@ bool existantNamedVertex(graphNode* graphHead, const char* cstring);
 
 /* Implementation functions */
 int pushUniqueVertex(graphNode** graphHead, const char* cstring);
-void linkVertices(graphNode* head, int idOne, int idTwo, int distance);
+int linkVertices(graphNode* head, int idOne, int idTwo, int distance);
+int linkByName(graphNode* head, const char* nameOne,
+  const char* nameTwo, int distance);
+
 
 /* Removal functions */
 void severLink(graphNode* head, int idOne, int idTwo, int distance);
