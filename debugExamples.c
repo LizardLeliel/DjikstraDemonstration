@@ -165,34 +165,45 @@ void basicGraph3() {
 
     linkByName(test, "Kyoto", "Osaka", 4);
 
-    printEverything(test);
-    printf("^This is everything before deletions^\n");
+    /* This code is designed to test deletion and pushing after deleting.
+     * it gets in the way of seeing djikstra's algorithm work */
 
-    printf("%d\n", deleteVertexAndLinks(&test, "Kuala Lumpur"));
-    printEverything(test);
-    printf("^After Kuala Lumpur was deleted^\n");
-    printf("==================================\n");
+    //printEverything(test);
+    //printf("^This is everything before deletions^\n");
 
-    pushUniqueVertex(&test, "Imaginary land");
-    linkByName(test, "Imaginary land", "Kyoto", 29);
+    //printf("%d\n", deleteVertexAndLinks(&test, "Kuala Lumpur"));
+    //printEverything(test);
+    //printf("^After Kuala Lumpur was deleted^\n");
+    //printf("==================================\n");
+
+    //pushUniqueVertex(&test, "Imaginary land");
+    //linkByName(test, "Imaginary land", "Kyoto", 29);
 
     /*Imaginary land should have ID 6*/
-    printf("Test: %s %d\n", test->name, test->id);
+    //printf("Test: %s %d\n", test->name, test->id);
+    //printEverything(test);
+    //printf("^New push^\n");
+
+    //pushUniqueVertex(&test, "OMG");
+    //printf("We just pushed \"OMG\", and the new vertex's number is: %d\n",
+    //       test->id);
+
     printEverything(test);
-    printf("^New push^\n");
 
-    pushUniqueVertex(&test, "OMG");
-    printf("We just pushed \"OMG\", and the new vertex's number is: %d\n",
-           test->id);
+    //printf("%p, id: %d\n", test, test->id);
 
-    printEverything(test);
-
-    printf("%p, id: %d\n", test, test->id);
+    //deleteVertexAndLinks(&test, "OMG");
 
     initDjikstra(test, 3);
 
-    printHeapArray(test);
-    printQ_QUEUE();
+    //printHeapArray(test);
+    //printP_QUEUE();
+
+
+    /* HERE IT IS */
+    printf("\n\n!!!!!!!!!!\n\n\n");
+    djikstraAll();
+    printDResults(test);
 }
 
 

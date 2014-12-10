@@ -12,7 +12,7 @@ pqueue_t* nodeQueue;
 
 void initDjikstra(graphNode* graph, int from) {
     /* build reference array */
-    heapArray = malloc(sizeof(heap_t)*returnHighestID());
+    heapArray = malloc(sizeof(heap_t)*(returnHighestID()+1));
 
     /* set heap data */
     while (graph) {
@@ -24,13 +24,141 @@ void initDjikstra(graphNode* graph, int from) {
     }
 
     nodeQueue = malloc(sizeof(pqueue_t));
-    nodeQueue->next = NULL;
+    nodeQueue->next = nodeQueue;
 
     heapArray[from].distance = 0;
     heapArray[from].parent   = NULL;
+    heapArray[0].parent      = heapArray + from; /* The top of the heap */
 
     nodeQueue->enqueued = heapArray + from;
 }
+
+void enqueue(pqueue_t** queueNode, heap_t* toEnqueue) {
+    /* If the the child list is emptey, then its either visited,
+     * or it has no more child nodes, so we exit */
+    if (!toEnqueue->shortest) return;
+    /* We then do a standard queue pushing here */
+    pqueue_t* newNode  = malloc(sizeof(pqueue_t));
+    newNode->enqueued  = toEnqueue;
+    newNode->next      = (*queueNode)->next;
+    (*queueNode)->next = newNode;
+    (*queueNode)       = newNode;
+}
+
+void dequeue(pqueue_t** queueNode) {
+    pqueue_t* toFree = (*queueNode)->next;
+    **queueNode = *toFree;    /* copy */
+    if (*queueNode == toFree) /* we're deleting the only node left */
+        *queueNode = NULL;    /* End of algorithm */
+
+    free(toFree);
+}
+
+/* the hurtful part of using a pirority queue ;-; */
+void findPirority(pqueue_t** queueNode /* out variable */) {
+    /* if the queueNode is NULL, then we searched everything */
+    if (!*queueNode) return;
+
+    /* else, we have a searcher pointer */
+    pqueue_t* finder = (*queueNode)->next;
+
+    /* and a struct to keep track of its findings */
+    struct {pqueue_t* found; unsigned int pirority;} record;
+
+    /* we set it to the top, in case that is the highest piority */
+    record.found    = *queueNode;
+    record.pirority = ((*queueNode)->enqueued->distance);
+
+    /* And as we go down the queue until it comes back to the top */
+    while (finder != *queueNode) {
+
+        /* If this node's distance from source is lower then the record's,
+         * it'll be marked as temporarly "found" */
+        if (finder->enqueued->distance < record.pirority) {
+            record.found = finder;
+            /* and of course the pirority is updated */
+            record.pirority = finder->enqueued->distance;
+        }
+        /* We move onto the next */
+        finder = finder->next;
+    }
+    /* And whatever we have found we'd want to set at the top */
+    *queueNode = record.found;
+
+}
+
+void djikstraAll() {
+    /* While there are unchecked paths */
+    while (nodeQueue) {
+        /* We visit the node currently queued */
+        heap_t* visiting = nodeQueue->enqueued;
+
+        /* We check everything it is linked too */
+        while (visiting->shortest) {
+            /* We find which child we're looking at */
+            heap_t* comparing = heapArray + visiting->shortest->id;
+            /* And its distance from above */
+            unsigned int distFromAbove = visiting->shortest->distance;
+
+            /* and if the child node's distance is lower then the parent's
+             * distance from source + the distance between them, then we found
+             * the shorter path, and we'd want to update this */
+            if (visiting->distance + distFromAbove < comparing->distance) {
+                comparing->parent   = visiting;
+                comparing->distance = visiting->distance + distFromAbove;
+            }
+            /* We enqueue this child, saying look at this eventually */
+            enqueue(&nodeQueue, comparing);
+
+            /* And we move onto the next child */
+            visiting->shortest = visiting->shortest->next;
+
+        }
+        /* Then we remove the visiting node from our queue */
+        dequeue(&nodeQueue);
+        /* And search for the queue, and set nodeQueue to the next
+         * lowest pirority. Its a circular list, so it doesn't matter
+         * what's first */
+        findPirority(&nodeQueue);
+    }
+}
+
+void printDPath(heap_t* path) {
+    if (!path) return;
+
+    printDPath(path->parent);
+
+    printf("%s->", path->node->name);
+    return;
+}
+
+void printDResults(graphNode* graph) {
+    printf("-----------\n");
+    while(graph) {
+        printf("Shortest Distance from %s to %s: %u\n",
+                heapArray[0].parent->node->name,
+                heapArray[graph->id].node->name,
+                heapArray[graph->id].distance);
+        printf("The path: \n");
+        printDPath(heapArray + graph->id);
+        printf("done\n----------\n");
+        graph = graph->next;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void printHeapArray(graphNode* graph) {
@@ -52,13 +180,13 @@ void printHeapArray(graphNode* graph) {
     printf("========= End =========\n");
 }
 
-void printQ_QUEUE() {
+void printP_QUEUE() {
     pqueue_t* q = nodeQueue;
 
-    while (q) {
+    do {
         printf("%p, %s\n", q->enqueued, q->enqueued->node->name);
         q = q->next;
-    }
+    } while (q != nodeQueue);
 
 }
 

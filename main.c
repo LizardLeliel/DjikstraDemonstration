@@ -14,6 +14,6 @@ int main()
     //basicFreeIDSample();
     //basicGraph2();
     basicGraph3();
-    printf("%u %u", sizeof(void*), sizeof(unsigned long));
+
     return 0;
 }
