@@ -55,6 +55,8 @@ void basicFreeIDSample() {
       nextAvailableIDs());
 }
 
+#define NEWL printf("\n")
+
 void basicGraph2() {
     graphNode* testGraph = NULL;
 
@@ -87,8 +89,104 @@ void basicGraph2() {
 
     linkByName(testGraph, "Graph3", "Graph1", 95);
 
-    printNodeAndConnections(testGraph->next);
+    printNodeAndConnections(testGraph->next); printf("\n");
 
+    /*deleteNode(&(testGraph->next->adjHead), 1);*/
+    /*printNodeAndConnections(testGraph->next); NEWL ;*/
+    /* ^ This works! But the function evidently works in the next
+     * function, and its useful to have that graphNode set right */
 
+    severIDLink(testGraph, 3, 4); printf("Reached here \n");
+    printNodeAndConnections(testGraph->next); NEWL ;
+    printNodeAndConnections(testGraph); NEWL ;
+    printNodeAndConnections(testGraph->next->next->next); NEWL ;
 
+    severNamedLink(testGraph, "graph1", "graph4");
+    printNodeAndConnections(testGraph); NEWL ;
+    printNodeAndConnections(testGraph->next->next->next); NEWL ;
+
+    severNamedLink(testGraph, "Graph1", "Graph4");
+    printNodeAndConnections(testGraph); NEWL ;
+    printNodeAndConnections(testGraph->next->next->next); NEWL ;
 }
+
+void basicGraph3() {
+    graphNode* test = NULL;
+    /* Test data based off my Civilization V game */
+    /* http://cloud-4.steampowered.com/ugc/49867998648437970/AE9960A7C9AC6B6325C7F6C8B5880E38020E0FD2/ */
+    pushUniqueVertex(&test, "Kyoto");
+    pushUniqueVertex(&test, "Osaka");
+    pushUniqueVertex(&test, "Satsuma");
+    pushUniqueVertex(&test, "Tokyo");
+    pushUniqueVertex(&test, "Ragusa");
+    pushUniqueVertex(&test, "Kuala Lumpur");
+    pushUniqueVertex(&test, "Ankara");
+    pushUniqueVertex(&test, "Istanbul");
+    pushUniqueVertex(&test, "Kuala Lumpur");
+    pushUniqueVertex(&test, "Bursa");
+    pushUniqueVertex(&test, "Edirne");
+    pushUniqueVertex(&test, "Kagoshima");
+    pushUniqueVertex(&test, "Nagoya");
+
+    printEveryVertex(test); NEWL ;
+
+    /* I counted these by hand by tiles :S */
+    /* Most are probably approximations. Also, counting the roads */
+    linkByName(test, "Kagoshima", "Nagoya", 5);
+    linkByName(test, "Kagoshima", "Istanbul", 7);
+    linkByName(test, "Kagoshima", "Bursa", 5);
+
+    linkByName(test, "Nagoya", "Edirne", 6);
+
+    linkByName(test, "Bursa", "Istanbul", 4);
+    linkByName(test, "Bursa", "Ragusa", 8);
+    linkByName(test, "Bursa", "Satsuma", 11);
+    linkByName(test, "Bursa", "Kuala Lumpur", 8);
+
+    linkByName(test, "Istanbul", "Edirne", 4);
+    linkByName(test, "Istanbul", "Kuala Lumpur", 6);
+    linkByName(test, "Istanbul", "Satsuma", 9);
+    linkByName(test, "Istanbul", "Ragusa", 9);
+
+    linkByName(test, "Ragusa", "Kuala Lumpur", 8);
+    linkByName(test, "Ragusa", "Satsuma", 5);
+    linkByName(test, "Ragusa", "Kyoto", 6);
+
+    linkByName(test, "Kuala Lumpur", "Ankara", 3);
+    linkByName(test, "Kuala Lumpur", "Satsuma", 6);
+
+    linkByName(test, "Ankara", "Tokyo", 4);
+
+    linkByName(test, "Satsuma", "Tokyo", 3);
+    linkByName(test, "Satsuma", "Kyoto", 3);
+
+    linkByName(test, "Tokyo", "Osaka", 4);
+
+    linkByName(test, "Kyoto", "Osaka", 4);
+
+    printEverything(test);
+    printf("^This is everything before deletions^\n");
+
+    printf("%d\n", deleteVertexAndLinks(&test, "Kuala Lumpur"));
+    printEverything(test);
+    printf("^After Kuala Lumpur was deleted^\n");
+    printf("==================================\n");
+
+    pushUniqueVertex(&test, "Imaginary land");
+    linkByName(test, "Imaginary land", "Kyoto", 29);
+
+    /*Imaginary land should have ID 6*/
+    printf("Test: %s %d\n", test->name, test->id);
+    printEverything(test);
+    printf("^New push^\n");
+
+    pushUniqueVertex(&test, "OMG");
+    printf("We just pushed \"OMG\", and the new vertex's number is: %d\n",
+           test->id);
+}
+
+
+
+#undef NEWL
+
+

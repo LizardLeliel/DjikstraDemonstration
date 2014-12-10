@@ -12,7 +12,8 @@ int main()
 
     //basicGraphAndSampleLists();
     //basicFreeIDSample();
-    basicGraph2();
+    //basicGraph2();
+    basicGraph3();
 
     return 0;
 }
