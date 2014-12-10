@@ -11,8 +11,7 @@ typedef struct RemovedIDs {
 void idStackInit();
 void pushAvailableIDs(int n);
 unsigned int nextAvailableIDs();
-availableIDs* returnFreeIDs();
-
+unsigned int returnHighestID();
 
 #define TRACKING_HEADER
 #endif

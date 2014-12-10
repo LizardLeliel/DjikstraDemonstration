@@ -1,6 +1,7 @@
 #include "debugExamples.h"
 #include "graphing.h"
 #include "rtTracking.h"
+#include "djikstra.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -183,6 +184,15 @@ void basicGraph3() {
     pushUniqueVertex(&test, "OMG");
     printf("We just pushed \"OMG\", and the new vertex's number is: %d\n",
            test->id);
+
+    printEverything(test);
+
+    printf("%p, id: %d\n", test, test->id);
+
+    initDjikstra(test, 3);
+
+    printHeapArray(test);
+    printQ_QUEUE();
 }
 
 

@@ -177,7 +177,7 @@ int severIDLink(graphNode* graphHead, int idOne, int idTwo) {
     adjNode** head1 = NULL;
     adjNode** head2 = NULL;
     while (!(head1 && head2)) {
-        if (!graphHead) { printf("severIDLink reached end\n"); return 2; }/* Head reached Null */
+        if (!graphHead) return 2;/* Head reached Null */
 
         if (graphHead->id == idOne)
             head1 = &(graphHead->adjHead);

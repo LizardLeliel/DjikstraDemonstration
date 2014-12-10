@@ -25,3 +25,7 @@ unsigned int nextAvailableIDs() {
     freeIDs   = freeIDs->next;
     return returnVal;
 }
+
+unsigned int returnHighestID() {
+    return nextAvailable;
+}
