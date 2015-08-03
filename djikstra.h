@@ -2,44 +2,46 @@
 #include "graphing.h"
 #include "rtTracking.h"
 
-typedef struct HEAP {
+typedef struct SHORTEST_PATH_NODE {
 
-    struct HEAP* parent;
+    struct SHORTEST_PATH_NODE* parent;
     graphNode* node;
     unsigned int distance;
     adjNode* shortest; /* When null, visited */
 
-} heap_t;
+} shortPathNode_t;
 
 
 typedef struct PIRORITY_QUEUE {
 
     struct PIRORITY_QUEUE* next;
-    heap_t* enqueued;
+    shortPathNode_t* enqueued;
 
 } pqueue_t;
 
-void initDjikstra(graphNode* graph, int from);
 
-void enqueue(pqueue_t** queueNode, heap_t* toEnqueue);
-void dequeue(pqueue_t** queueNode);
-void djikstraAll();
+
+//shortPathNode_t* initDjikstra(graphNode* graph, int from);
+shortPathNode_t* djikstraAll(graphNode* graph, int from);
+
+//void enqueue(pqueue_t** queueNode, shortPathNode_t* toEnqueue);
+//void dequeue(pqueue_t** queueNode);
+
 
 
 
 /* debug printing */
-void printDPath(heap_t* path);
-void printDResults();
+//void printDPath(shortPathNode_t* path);
+void printDResults(graphNode* graph, shortPathNode_t* shorestPaths);
 void printHeapArray();
 void printP_QUEUE(); /* Its spelled like this because it was freaking out
                      * with the stdio.h library and I didn't want to take
                      * any risks */
 
-void djikstraAll();
 
 void freeDjikstra();
 
-//heap_t* heapArray;
+//shortPathNode_t* heapArray;
 //pqueue_t* nodeQueue;
 
 #define DJIKSTRA_HEADER

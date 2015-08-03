@@ -19,7 +19,6 @@ void printNodeAndConnections(graphNode* graphHead) {
     printf("This is vertex %s with id %d. It's connected to these vertices:\n",
             graphHead->name, graphHead->id);
     printConnections(graphHead->adjHead);
-
 }
 
 void printEveryVertex(graphNode* graphHead) {
@@ -129,7 +128,7 @@ int linkByName(graphNode* graphHead, const char* nameOne, const char* nameTwo,
     adjNode** head2 = NULL;
 
     while (!(idOne && idTwo)) {
-        if (graphHead == NULL) return 2;/*graphHead reaches end: node ! found*/
+        if (graphHead == NULL) return 2;//graphHead reaches end: node ! found
 
         if (!(strcmp(nameOne, graphHead->name))) {
             head1 = &(graphHead->adjHead);
@@ -267,7 +266,6 @@ int deleteVertexAndLinks(graphNode** graphHead, const char* target) {
 
     while (temp->adjHead)
         severIDLink(*graphHead, temp->id, temp->adjHead->id);
-
 
     tracer->next = tracer->next->next;
     pushAvailableIDs(temp->id);

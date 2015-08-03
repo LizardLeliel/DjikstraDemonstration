@@ -194,16 +194,16 @@ void basicGraph3() {
 
     //deleteVertexAndLinks(&test, "OMG");
 
-    initDjikstra(test, 3);
+    //initDjikstra(test, 3);
 
     //printHeapArray(test);
     //printP_QUEUE();
 
 
     /* HERE IT IS */
-    printf("\n\n!!!!!!!!!!\n\n\n");
-    djikstraAll();
-    printDResults(test);
+    //printf("\n\n!!!!!!!!!!\n\n\n");
+    shortPathNode_t* result = djikstraAll(test, 3);
+    printDResults(test, result);
 }
 
 

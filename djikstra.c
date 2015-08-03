@@ -6,17 +6,20 @@
 #include "graphing.h"
 #include "rtTracking.h"
 
-
-heap_t* heapArray;
+// These two are going to need to change
+//shortPathNode_t* heapArray;
 pqueue_t* nodeQueue;
 
-void initDjikstra(graphNode* graph, int from) {
+
+
+static shortPathNode_t* initDjikstra(graphNode* graph, int from) {
     /* build reference array */
-    heapArray = malloc(sizeof(heap_t)*(returnHighestID()+1));
+    shortPathNode_t* shortestPaths;
+    shortestPaths = malloc(sizeof(shortPathNode_t)*(returnHighestID()+1));
 
     /* set heap data */
     while (graph) {
-        heap_t* index   = heapArray + graph->id;
+        shortPathNode_t* index = shortestPaths + graph->id;
         index->node     = graph;
         index->distance = UINT_MAX;
         index->shortest = graph->adjHead;
@@ -26,14 +29,16 @@ void initDjikstra(graphNode* graph, int from) {
     nodeQueue = malloc(sizeof(pqueue_t));
     nodeQueue->next = nodeQueue;
 
-    heapArray[from].distance = 0;
-    heapArray[from].parent   = NULL;
-    heapArray[0].parent      = heapArray + from; /* The top of the heap */
+    shortestPaths[from].distance = 0;
+    shortestPaths[from].parent   = NULL;
+    shortestPaths[0].parent      = shortestPaths + from; /* The top of the heap */
 
-    nodeQueue->enqueued = heapArray + from;
+    nodeQueue->enqueued = shortestPaths + from;
+
+    return shortestPaths;
 }
 
-void enqueue(pqueue_t** queueNode, heap_t* toEnqueue) {
+static void enqueue(pqueue_t** queueNode, shortPathNode_t* toEnqueue) {
     /* If the the child list is emptey, then its either visited,
      * or it has no more child nodes, so we exit */
     if (!toEnqueue->shortest) return;
@@ -45,7 +50,7 @@ void enqueue(pqueue_t** queueNode, heap_t* toEnqueue) {
     (*queueNode)       = newNode;
 }
 
-void dequeue(pqueue_t** queueNode) {
+static void dequeue(pqueue_t** queueNode) {
     pqueue_t* toFree = (*queueNode)->next;
     **queueNode = *toFree;    /* copy */
     if (*queueNode == toFree) /* we're deleting the only node left */
@@ -55,7 +60,7 @@ void dequeue(pqueue_t** queueNode) {
 }
 
 /* the hurtful part of using a pirority queue ;-; */
-void findPirority(pqueue_t** queueNode /* out variable */) {
+static void findPirority(pqueue_t** queueNode /* out variable */) {
     /* if the queueNode is NULL, then we searched everything */
     if (!*queueNode) return;
 
@@ -87,16 +92,18 @@ void findPirority(pqueue_t** queueNode /* out variable */) {
 
 }
 
-void djikstraAll() {
+shortPathNode_t* djikstraAll(graphNode* graph, int from) {
+    shortPathNode_t* heapArray = initDjikstra(graph, from);
+
     /* While there are unchecked paths */
     while (nodeQueue) {
         /* We visit the node currently queued */
-        heap_t* visiting = nodeQueue->enqueued;
+        shortPathNode_t* visiting = nodeQueue->enqueued;
 
         /* We check everything it is linked too */
         while (visiting->shortest) {
             /* We find which child we're looking at */
-            heap_t* comparing = heapArray + visiting->shortest->id;
+            shortPathNode_t* comparing = heapArray + visiting->shortest->id;
             /* And its distance from above */
             unsigned int distFromAbove = visiting->shortest->distance;
 
@@ -121,9 +128,13 @@ void djikstraAll() {
          * what's first */
         findPirority(&nodeQueue);
     }
+
+    return heapArray;
 }
 
-void printDPath(heap_t* path) {
+shortPathNode_t* heapArray;
+
+static void printDPath(shortPathNode_t* path) {
     if (!path) return;
 
     printDPath(path->parent);
@@ -132,36 +143,23 @@ void printDPath(heap_t* path) {
     return;
 }
 
-void printDResults(graphNode* graph) {
+void printDResults(graphNode* graph, shortPathNode_t* shortestPaths) {
     printf("-----------\n");
     while(graph) {
+
         printf("Shortest Distance from %s to %s: %u\n",
-                heapArray[0].parent->node->name,
-                heapArray[graph->id].node->name,
-                heapArray[graph->id].distance);
+                shortestPaths[0].parent->node->name,
+                shortestPaths[graph->id].node->name,
+                shortestPaths[graph->id].distance);
         printf("The path: \n");
-        printDPath(heapArray + graph->id);
+        printDPath(shortestPaths + graph->id);
         printf("done\n----------\n");
         graph = graph->next;
     }
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void printHeapArray(graphNode* graph) {
+void printHeapArray(graphNode* graph, shortPathNode_t* shortestPaths) {
 
     printf("========== Heap printing ==========\n");
     int i = 0;

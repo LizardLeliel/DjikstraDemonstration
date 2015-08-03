@@ -13,7 +13,6 @@ typedef struct VertexNode {
     char* name;
     adjNode* adjHead;
     struct VertexNode* next;
-
 } graphNode;
 
 
@@ -47,7 +46,6 @@ int severNamedLink(graphNode* head, const char* name1, const char* name2);
 int deleteVertex(graphNode** head, int target);
 /*^ This will probably be delete in the end */
 int deleteVertexAndLinks(graphNode** graphHead, const char* target);
-
 
 
 #define GRAPHING_HEADER
