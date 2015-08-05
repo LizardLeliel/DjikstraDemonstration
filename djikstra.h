@@ -2,6 +2,7 @@
 #include "graphing.h"
 #include "rtTracking.h"
 
+// Sturcture to help with the djikstra algorithm and store results
 typedef struct SHORTEST_PATH_NODE {
 
     struct SHORTEST_PATH_NODE* parent;
@@ -11,7 +12,7 @@ typedef struct SHORTEST_PATH_NODE {
 
 } shortPathNode_t;
 
-
+// This is going to be deleted
 typedef struct PIRORITY_QUEUE {
 
     struct PIRORITY_QUEUE* next;
@@ -19,13 +20,23 @@ typedef struct PIRORITY_QUEUE {
 
 } pqueue_t;
 
+// Heap for a priority queue in the algorithm
+typedef struct PRIORITY_QUEUE_HEAP {
+    shortPathNode_t** heapArray; // Array of pointers
+    unsigned int currentNext;
+    unsigned int max;
 
+} priorityHeap_t;
 
-//shortPathNode_t* initDjikstra(graphNode* graph, int from);
+// Heap funcions
+priorityHeap_t* newHeap();
+void deleteHeap(priorityHeap_t* heap);
+void insertIntoHeap(priorityHeap_t* heap, shortPathNode_t* element);
+shortPathNode_t* popHeap(priorityHeap_t* heap);
+
+// The one function to worry about.
 shortPathNode_t* djikstraAll(graphNode* graph, int from);
 
-//void enqueue(pqueue_t** queueNode, shortPathNode_t* toEnqueue);
-//void dequeue(pqueue_t** queueNode);
 
 
 

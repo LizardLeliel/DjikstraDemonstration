@@ -9,13 +9,69 @@
 // These two are going to need to change
 //shortPathNode_t* heapArray;
 pqueue_t* nodeQueue;
+// Replace 90000 with int max. 
+shortPathNode_t dummy = {NULL, NULL, 90000, NULL};
 
+priorityHeap_t* newHeap() {
+    priorityHeap_t* newHeap = malloc(sizeof(priorityHeap_t));
+    newHeap->currentNext = 0;
+    // This should be plenty of space
+    newHeap->max         = returnHighestID() * 2;
+                           // Should use calloc here.
+    newHeap->heapArray   = malloc(sizeof(shortPathNode_t*) * newHeap->max);
 
+    return newHeap;
+}
 
-static shortPathNode_t* initDjikstra(graphNode* graph, int from) {
+void deleteHeap(priorityHeap_t* heap) {
+    free(heap->heapArray);
+    free(heap);
+}
+
+void insertIntoHeap(priorityHeap_t* heap, shortPathNode_t* element) {
+    // Add some reallocation code here
+    // Basic initalizing
+    shortPathNode_t** heapArray = heap->heapArray;
+    unsigned int lowerRef, higherRef;
+    lowerRef            = heap->currentNext;
+    heapArray[lowerRef] = element;
+
+    ++(heap->currentNext);
+
+    while(lowerRef != 0) {
+        higherRef = (lowerRef - 2 + (lowerRef & 1)) >> 1;
+
+        if (heapArray[higherRef]->distance > element->distance) {
+            heapArray[lowerRef]  = heapArray[higherRef];
+            heapArray[higherRef] = element;
+        }
+        else break;
+
+        lowerRef = higherRef;
+    }
+
+}
+
+shortPathNode_t* popHeap(priorityHeap_t* heap){
+    shortPathNode_t** heapArray = heap->heapArray;
+    shortPathNode_t* returnVal  = heapArray[0];
+    unsigned int higherRef      = 0;
+    unsigned int firstLeaf      = 1;
+    unsigned int secondLeaf     = 2;
+
+    --(heap->currentNext);
+    heapArray[0]                 = heapArray[heap->currentNext];
+    heapArray[heap->currentNext] = NULL;
+
+    return NULL;
+}
+
+// Initializing helper function
+static shortPathNode_t* initDjikstra(graphNode* graph, int from, 
+  priorityHeap_t** heap) {
     /* build reference array */
     shortPathNode_t* shortestPaths;
-    shortestPaths = malloc(sizeof(shortPathNode_t)*(returnHighestID()+1));
+    shortestPaths = malloc(sizeof(shortPathNode_t) * (returnHighestID()+1));
 
     /* set heap data */
     while (graph) {
@@ -26,18 +82,23 @@ static shortPathNode_t* initDjikstra(graphNode* graph, int from) {
         graph           = graph->next;
     }
 
-    nodeQueue = malloc(sizeof(pqueue_t));
-    nodeQueue->next = nodeQueue;
-
+    // Initializing some points in the array.
     shortestPaths[from].distance = 0;
     shortestPaths[from].parent   = NULL;
     shortestPaths[0].parent      = shortestPaths + from; /* The top of the heap */
 
+    // Making our heap.
+    *heap = newHeap();
+
+    // Our hold Priority Queue. Delete this part.
+    nodeQueue = malloc(sizeof(pqueue_t));
+    nodeQueue->next = nodeQueue;
     nodeQueue->enqueued = shortestPaths + from;
 
     return shortestPaths;
 }
 
+// Old queue functions
 static void enqueue(pqueue_t** queueNode, shortPathNode_t* toEnqueue) {
     /* If the the child list is emptey, then its either visited,
      * or it has no more child nodes, so we exit */
@@ -93,7 +154,8 @@ static void findPirority(pqueue_t** queueNode /* out variable */) {
 }
 
 shortPathNode_t* djikstraAll(graphNode* graph, int from) {
-    shortPathNode_t* heapArray = initDjikstra(graph, from);
+    priorityHeap_t* heap;
+    shortPathNode_t* heapArray = initDjikstra(graph, from, &heap);
 
     /* While there are unchecked paths */
     while (nodeQueue) {
@@ -132,8 +194,11 @@ shortPathNode_t* djikstraAll(graphNode* graph, int from) {
     return heapArray;
 }
 
+// This is so the unused printing functions still compile. I need to find
+//  those and delete those. 
 shortPathNode_t* heapArray;
 
+//printing function
 static void printDPath(shortPathNode_t* path) {
     if (!path) return;
 
