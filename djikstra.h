@@ -33,6 +33,7 @@ priorityHeap_t* newHeap();
 void deleteHeap(priorityHeap_t* heap);
 void insertIntoHeap(priorityHeap_t* heap, shortPathNode_t* element);
 shortPathNode_t* popHeap(priorityHeap_t* heap);
+bool heapIsEmpty(priorityHeap_t* heap);
 
 // The one function to worry about.
 shortPathNode_t* djikstraAll(graphNode* graph, int from);

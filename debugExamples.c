@@ -205,6 +205,9 @@ void basicGraph3() {
     shortPathNode_t* result = djikstraAll(test, 3);
     printDResults(test, result);
 
+    bool heap = false;
+    if (heap)
+    {
     priorityHeap_t* heap = newHeap();
 
     printf("\nNo pushed: max: %d currentNext: %d\n\n", 
@@ -278,6 +281,7 @@ void basicGraph3() {
     while (heap->currentNext != 0) {
         printf("The rest: %d, ", popHeap(heap)->distance);
     } NEWL ; NEWL ;
+    }
 }
 
 

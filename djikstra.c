@@ -46,6 +46,8 @@ void insertIntoHeap(priorityHeap_t* heap, shortPathNode_t* element) {
 
     ++(heap->currentNext);
 
+    //if (heap->currentNext == 1) return;
+
     while (lowerRef != 0) {
         higherRef = (lowerRef - 2 + (lowerRef & 1)) >> 1;
 
@@ -75,6 +77,11 @@ shortPathNode_t* popHeap(priorityHeap_t* heap) {
     if (heap->currentNext <= 1) return returnVal;
     else if (heap->currentNext == 2)
     {
+        if (heapArray[0] == NULL || heapArray[1] == NULL)
+        {
+            printf("\nWe have a problem with 2 pushed\n");
+            return returnVal;
+        }
         if (heapArray[0]->distance > heapArray[1]->distance) {
             shortPathNode_t* swap = heapArray[higherRef];
             heapArray[higherRef]  = heapArray[firstLeaf];
@@ -86,8 +93,9 @@ shortPathNode_t* popHeap(priorityHeap_t* heap) {
     while (firstLeaf < heap->currentNext) {
         secondLeaf = firstLeaf + 1;
 
-        if (heapArray[firstLeaf]->distance 
-          > heapArray[secondLeaf]->distance) {
+        if (secondLeaf < heap->currentNext
+          && heapArray[firstLeaf]->distance 
+          >  heapArray[secondLeaf]->distance) {
             ++firstLeaf; --secondLeaf;
         }
 
@@ -117,6 +125,10 @@ shortPathNode_t* popHeap(priorityHeap_t* heap) {
     return returnVal;
 }
 
+inline bool heapIsEmpty(priorityHeap_t* heap) {
+    return heap->currentNext == 0;
+}
+
 // Initializing helper function
 static shortPathNode_t* initDjikstra(graphNode* graph, int from, 
   priorityHeap_t** heap) {
@@ -140,11 +152,12 @@ static shortPathNode_t* initDjikstra(graphNode* graph, int from,
 
     // Making our heap.
     *heap = newHeap();
+    insertIntoHeap(*heap, shortestPaths + from);
 
     // Our hold Priority Queue. Delete this part.
-    nodeQueue = malloc(sizeof(pqueue_t));
-    nodeQueue->next = nodeQueue;
-    nodeQueue->enqueued = shortestPaths + from;
+    //nodeQueue = malloc(sizeof(pqueue_t));
+    //nodeQueue->next = nodeQueue;
+    //nodeQueue->enqueued = shortestPaths + from;
 
     return shortestPaths;
 }
@@ -205,18 +218,20 @@ static void findPirority(pqueue_t** queueNode /* out variable */) {
 }
 
 shortPathNode_t* djikstraAll(graphNode* graph, int from) {
-    priorityHeap_t* heap;
-    shortPathNode_t* heapArray = initDjikstra(graph, from, &heap);
+    priorityHeap_t* heap;// = newHeap;
+    shortPathNode_t* shortestPaths = initDjikstra(graph, from, &heap);
 
     /* While there are unchecked paths */
-    while (nodeQueue) {
+    while (!heapIsEmpty(heap)) {
+
         /* We visit the node currently queued */
-        shortPathNode_t* visiting = nodeQueue->enqueued;
+        //shortPathNode_t* visiting = nodeQueue->enqueued;
+        shortPathNode_t* visiting = popHeap(heap);
 
         /* We check everything it is linked too */
         while (visiting->shortest) {
             /* We find which child we're looking at */
-            shortPathNode_t* comparing = heapArray + visiting->shortest->id;
+            shortPathNode_t* comparing = shortestPaths + visiting->shortest->id;
             /* And its distance from above */
             unsigned int distFromAbove = visiting->shortest->distance;
 
@@ -228,21 +243,22 @@ shortPathNode_t* djikstraAll(graphNode* graph, int from) {
                 comparing->distance = visiting->distance + distFromAbove;
             }
             /* We enqueue this child, saying look at this eventually */
-            enqueue(&nodeQueue, comparing);
+            //enqueue(&nodeQueue, comparing);
+            insertIntoHeap(heap, comparing);
 
             /* And we move onto the next child */
             visiting->shortest = visiting->shortest->next;
 
         }
         /* Then we remove the visiting node from our queue */
-        dequeue(&nodeQueue);
+        //dequeue(&nodeQueue);
         /* And search for the queue, and set nodeQueue to the next
          * lowest pirority. Its a circular list, so it doesn't matter
          * what's first */
-        findPirority(&nodeQueue);
+        //findPirority(&nodeQueue);
     }
 
-    return heapArray;
+    return shortestPaths;
 }
 
 // This is so the unused printing functions still compile. I need to find
