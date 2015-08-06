@@ -10,7 +10,7 @@
 //shortPathNode_t* heapArray;
 pqueue_t* nodeQueue;
 // Replace 90000 with int max. 
-shortPathNode_t dummy = {NULL, NULL, 90000, NULL};
+shortPathNode_t dummy = {NULL, NULL, UINT_MAX, NULL};
 
 priorityHeap_t* newHeap() {
     priorityHeap_t* newHeap = malloc(sizeof(priorityHeap_t));
@@ -29,6 +29,14 @@ void deleteHeap(priorityHeap_t* heap) {
 }
 
 void insertIntoHeap(priorityHeap_t* heap, shortPathNode_t* element) {
+
+    if (heap->currentNext == heap->max)
+    {
+        heap->heapArray 
+            = realloc(heap->heapArray, sizeof(shortPathNode_t*)*heap->max*2);
+        heap->max *= 2;
+    }
+
     // Add some reallocation code here
     // Basic initalizing
     shortPathNode_t** heapArray = heap->heapArray;
@@ -38,7 +46,7 @@ void insertIntoHeap(priorityHeap_t* heap, shortPathNode_t* element) {
 
     ++(heap->currentNext);
 
-    while(lowerRef != 0) {
+    while (lowerRef != 0) {
         higherRef = (lowerRef - 2 + (lowerRef & 1)) >> 1;
 
         if (heapArray[higherRef]->distance > element->distance) {
@@ -49,10 +57,11 @@ void insertIntoHeap(priorityHeap_t* heap, shortPathNode_t* element) {
 
         lowerRef = higherRef;
     }
-
 }
 
-shortPathNode_t* popHeap(priorityHeap_t* heap){
+shortPathNode_t* popHeap(priorityHeap_t* heap) {
+    if (heap->currentNext == 0) return NULL;
+
     shortPathNode_t** heapArray = heap->heapArray;
     shortPathNode_t* returnVal  = heapArray[0];
     unsigned int higherRef      = 0;
@@ -63,7 +72,49 @@ shortPathNode_t* popHeap(priorityHeap_t* heap){
     heapArray[0]                 = heapArray[heap->currentNext];
     heapArray[heap->currentNext] = NULL;
 
-    return NULL;
+    if (heap->currentNext <= 1) return returnVal;
+    else if (heap->currentNext == 2)
+    {
+        if (heapArray[0]->distance > heapArray[1]->distance) {
+            shortPathNode_t* swap = heapArray[higherRef];
+            heapArray[higherRef]  = heapArray[firstLeaf];
+            heapArray[firstLeaf]  = swap;
+        }
+        return returnVal;
+    }
+
+    while (firstLeaf < heap->currentNext) {
+        secondLeaf = firstLeaf + 1;
+
+        if (heapArray[firstLeaf]->distance 
+          > heapArray[secondLeaf]->distance) {
+            ++firstLeaf; --secondLeaf;
+        }
+
+        if (firstLeaf < heap->currentNext 
+          && heapArray[higherRef]->distance 
+          >  heapArray[firstLeaf]->distance) {
+            shortPathNode_t* swap = heapArray[higherRef];
+            heapArray[higherRef]  = heapArray[firstLeaf];
+            heapArray[firstLeaf]  = swap;
+            higherRef             = firstLeaf;
+            firstLeaf             = higherRef*2 + 1;
+        }
+
+        else if (secondLeaf < heap->currentNext
+          && heapArray[higherRef]->distance 
+          > heapArray[secondLeaf]->distance) {
+            shortPathNode_t* swap = heapArray[higherRef];
+            heapArray[higherRef]  = heapArray[secondLeaf];
+            heapArray[secondLeaf] = swap;
+            higherRef             = secondLeaf;
+            firstLeaf             = higherRef*2 + 1;
+        }
+
+        else break;
+    }
+
+    return returnVal;
 }
 
 // Initializing helper function
