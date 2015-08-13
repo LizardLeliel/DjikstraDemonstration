@@ -6,7 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-void basicGraphAndSampleLists() {
+void basicGraphAndSampleLists()
+{
     adjNode* test = NULL;
     pushAdjNode(&test, 4, 15);
     pushAdjNode(&test, 7, 21);
@@ -46,19 +47,21 @@ void basicGraphAndSampleLists() {
            existantNamedVertex(graphTest, "Hello, world!") ? "true" : "false");
 }
 
-void basicFreeIDSample() {
+void basicFreeIDSample()
+{
     pushAvailableIDs(22);
     pushAvailableIDs(5);
     pushAvailableIDs(17);
     printf("%d %d %d",
-      nextAvailableIDs(),
-      nextAvailableIDs(),
-      nextAvailableIDs());
+           nextAvailableIDs(),
+           nextAvailableIDs(),
+           nextAvailableIDs());
 }
 
 #define NEWL printf("\n")
 
-void basicGraph2() {
+void basicGraph2()
+{
     graphNode* testGraph = NULL;
 
     pushUniqueVertex(&testGraph, "Graph1");
@@ -74,12 +77,12 @@ void basicGraph2() {
 
     printNodeAndConnections(testGraph);
     printf("\nNodes which exist: %s, %s, %s, %s\n", testGraph->name,
-      testGraph->next->name, testGraph->next->next->name,
-      testGraph->next->next->next->name);
+           testGraph->next->name, testGraph->next->next->name,
+           testGraph->next->next->next->name);
 
     printf("Their ids: %d %d %d %d\n", testGraph->id,
-      testGraph->next->id, testGraph->next->next->id,
-      testGraph->next->next->next->id);
+           testGraph->next->id, testGraph->next->next->id,
+           testGraph->next->next->next->id);
 
     printf("%d\n", linkVertices(testGraph, 3, 4, 25));
     linkVertices(testGraph, 4, 2, 12);
@@ -111,7 +114,8 @@ void basicGraph2() {
     printNodeAndConnections(testGraph->next->next->next); NEWL ;
 }
 
-void basicGraph3() {
+void basicGraph3()
+{
     graphNode* test = NULL;
     /* Test data based off my Civilization V game */
     /* http://cloud-4.steampowered.com/ugc/49867998648437970/AE9960A7C9AC6B6325C7F6C8B5880E38020E0FD2/ */
@@ -171,28 +175,28 @@ void basicGraph3() {
     //printEverything(test);
     //printf("^This is everything before deletions^\n");
 
-    //printf("%d\n", deleteVertexAndLinks(&test, "Kuala Lumpur"));
-    //printEverything(test);
-    //printf("^After Kuala Lumpur was deleted^\n");
-    //printf("==================================\n");
+    printf("%d\n", deleteVertexAndLinks(&test, "Kuala Lumpur"));
+    printEverything(test);
+    printf("^After Kuala Lumpur was deleted^\n");
+    printf("==================================\n");
 
-    //pushUniqueVertex(&test, "Imaginary land");
+    pushUniqueVertex(&test, "Imaginary land");
     //linkByName(test, "Imaginary land", "Kyoto", 29);
 
     /*Imaginary land should have ID 6*/
-    //printf("Test: %s %d\n", test->name, test->id);
-    //printEverything(test);
-    //printf("^New push^\n");
+    printf("Test: %s %d\n", test->name, test->id);
+    printEverything(test);
+    printf("^New push^\n");
 
-    //pushUniqueVertex(&test, "OMG");
-    //printf("We just pushed \"OMG\", and the new vertex's number is: %d\n",
-    //       test->id);
+    pushUniqueVertex(&test, "OMG");
+    printf("We just pushed \"OMG\", and the new vertex's number is: %d\n",
+           test->id);
 
     printEverything(test);
 
     //printf("%p, id: %d\n", test, test->id);
 
-    //deleteVertexAndLinks(&test, "OMG");
+    deleteVertexAndLinks(&test, "OMG");
 
     //initDjikstra(test, 3);
 
@@ -203,84 +207,89 @@ void basicGraph3() {
     /* HERE IT IS */
     //printf("\n\n!!!!!!!!!!\n\n\n");
     shortPathNode_t* result = djikstraAll(test, 3);
-    printDResults(test, result);
+    //printDResults(test, result);
+    printDjikstraResultsAll(test, result);
 
     bool heap = false;
+    //heap = true;
     if (heap)
     {
-    priorityHeap_t* heap = newHeap();
+        priorityHeap_t* heap = newHeap();
 
-    printf("\nNo pushed: max: %d currentNext: %d\n\n", 
-           heap->max, heap->currentNext);
+        printf("\nNo pushed: max: %d currentNext: %d\n\n",
+               heap->max, heap->currentNext);
 
-    shortPathNode_t spn1 = { NULL, NULL, 10, NULL };
-    shortPathNode_t spn2 = { NULL, NULL, 20, NULL };
-    shortPathNode_t spn3 = { NULL, NULL, 30, NULL };
-    shortPathNode_t spn4 = { NULL, NULL, 40, NULL };
+        shortPathNode_t spn1 = { NULL, NULL, 10, NULL };
+        shortPathNode_t spn2 = { NULL, NULL, 20, NULL };
+        shortPathNode_t spn3 = { NULL, NULL, 30, NULL };
+        shortPathNode_t spn4 = { NULL, NULL, 40, NULL };
 
-    insertIntoHeap(heap, &spn2);
-    insertIntoHeap(heap, &spn1);
-       
-    printf("\nTwo pushed: max: %d currentNext: %d\n", 
-           heap->max, heap->currentNext);
+        insertIntoHeap(heap, &spn2);
+        insertIntoHeap(heap, &spn1);
 
-    printf("Top of heap (should be 10): %d", popHeap(heap)->distance);
-    printf("\nOne popped: max: %d currentNext: %d\n", 
-           heap->max, heap->currentNext);
-    printf("Top of heap (should be 20): %d", popHeap(heap)->distance);
-    printf("\nOne popped: max: %d currentNext: %d\n", 
-           heap->max, heap->currentNext);
+        printf("\nTwo pushed: max: %d currentNext: %d\n",
+               heap->max, heap->currentNext);
 
-    insertIntoHeap(heap, &spn1);
-    insertIntoHeap(heap, &spn2);
+        printf("Top of heap (should be 10): %d", popHeap(heap)->distance);
+        printf("\nOne popped: max: %d currentNext: %d\n",
+               heap->max, heap->currentNext);
+        printf("Top of heap (should be 20): %d", popHeap(heap)->distance);
+        printf("\nOne popped: max: %d currentNext: %d\n",
+               heap->max, heap->currentNext);
 
-    printf("\nNow pushing 10 then 20 then popping each: %d %d\n",
-           popHeap(heap)->distance, popHeap(heap)->distance);
+        insertIntoHeap(heap, &spn1);
+        insertIntoHeap(heap, &spn2);
 
-    insertIntoHeap(heap, &spn3);
-    insertIntoHeap(heap, &spn2);
-    insertIntoHeap(heap, &spn1);
+        printf("\nNow pushing 10 then 20 then popping each: %d %d\n",
+               popHeap(heap)->distance, popHeap(heap)->distance);
 
-    while (!(heap->currentNext == heap->max -1)) {
-        insertIntoHeap(heap, &spn4);
-    }
+        insertIntoHeap(heap, &spn3);
+        insertIntoHeap(heap, &spn2);
+        insertIntoHeap(heap, &spn1);
 
-    printf("Many pushed: max: %d currentNext: %d\n",
-           heap->max, heap->currentNext);
+        while (!(heap->currentNext == heap->max - 1))
+        {
+            insertIntoHeap(heap, &spn4);
+        }
 
-    printf("Popping once (should be 10): %d\n", popHeap(heap)->distance);
-    insertIntoHeap(heap, &spn2);
-    printf("pushing after popping: max: %d currentNext: %d\n",
-           heap->max, heap->currentNext);
-    insertIntoHeap(heap, &spn3);
-    printf("Pushing one more: max: %d currentNext: %d\n",
-           heap->max, heap->currentNext);
+        printf("Many pushed: max: %d currentNext: %d\n",
+               heap->max, heap->currentNext);
 
-    insertIntoHeap(heap, &spn1);
-    printf("Pushing past the max: max: %d currentNext %d\n",
-           heap->max, heap->currentNext);
+        printf("Popping once (should be 10): %d\n", popHeap(heap)->distance);
+        insertIntoHeap(heap, &spn2);
+        printf("pushing after popping: max: %d currentNext: %d\n",
+               heap->max, heap->currentNext);
+        insertIntoHeap(heap, &spn3);
+        printf("Pushing one more: max: %d currentNext: %d\n",
+               heap->max, heap->currentNext);
 
-    printf("\n Troting through the array: ");
-    for (int i = 0; i < 10; ++i)
-    {
-        printf("%d, ", heap->heapArray[i]->distance);
-    } NEWL ; NEWL ;
+        insertIntoHeap(heap, &spn1);
+        printf("Pushing past the max: max: %d currentNext %d\n",
+               heap->max, heap->currentNext);
+
+        printf("\n Troting through the array: ");
+        for (int i = 0; i < 10; ++i)
+        {
+            printf("%d, ", heap->heapArray[i]->distance);
+        } NEWL ; NEWL ;
 
 
-    printf("\nPopping many: ");
+        printf("\nPopping many: ");
 
-    while (heap->currentNext != 3) {
-        printf("%d, ", popHeap(heap)->distance);
-    } NEWL ; NEWL ;
+        while (heap->currentNext != 3)
+        {
+            printf("%d, ", popHeap(heap)->distance);
+        } NEWL ; NEWL ;
 
-    printf("Next: %d\n", heap->heapArray[0]->distance);
-    printf("Next next: %d\n", heap->heapArray[1]->distance);
-    printf("Next next next: %d\n", heap->heapArray[2]->distance);
-    //printf("Next next next next: %d\n", heap->heapArray[3]->distance);
+        printf("Next: %d\n", heap->heapArray[0]->distance);
+        printf("Next next: %d\n", heap->heapArray[1]->distance);
+        printf("Next next next: %d\n", heap->heapArray[2]->distance);
+        //printf("Next next next next: %d\n", heap->heapArray[3]->distance);
 
-    while (heap->currentNext != 0) {
-        printf("The rest: %d, ", popHeap(heap)->distance);
-    } NEWL ; NEWL ;
+        while (heap->currentNext != 0)
+        {
+            printf("The rest: %d, ", popHeap(heap)->distance);
+        } NEWL ; NEWL ;
     }
 }
 

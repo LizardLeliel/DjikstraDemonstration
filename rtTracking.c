@@ -5,19 +5,22 @@
 availableIDs* freeIDs;
 unsigned int nextAvailable;
 
-void idStackInit() {
+void idStackInit()
+{
     freeIDs = NULL;
     nextAvailable = 0;
 }
 
-void pushAvailableIDs(int n) {
+void pushAvailableIDs(int n)
+{
     availableIDs* newID = malloc(sizeof(availableIDs));
     newID->unused = n;
     newID->next   = freeIDs;
     freeIDs       = newID;
 }
 
-unsigned int nextAvailableIDs() {
+unsigned int nextAvailableIDs()
+{
     if (!freeIDs) return ++nextAvailable;
 
     unsigned int returnVal;
@@ -26,6 +29,7 @@ unsigned int nextAvailableIDs() {
     return returnVal;
 }
 
-unsigned int returnHighestID() {
+unsigned int returnHighestID()
+{
     return nextAvailable;
 }

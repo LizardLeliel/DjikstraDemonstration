@@ -2,13 +2,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef struct ConnectionNode {
+typedef struct ConnectionNode
+{
     int id;
     int distance;
     struct ConnectionNode* next;
 } adjNode;
 
-typedef struct VertexNode {
+typedef struct VertexNode
+{
     int id;
     char* name;
     adjNode* adjHead;
@@ -36,7 +38,7 @@ bool existantNamedVertex(graphNode* graphHead, const char* cstring);
 int pushUniqueVertex(graphNode** graphHead, const char* cstring);
 int linkVertices(graphNode* head, int idOne, int idTwo, int distance);
 int linkByName(graphNode* head, const char* nameOne,
-  const char* nameTwo, int distance);
+               const char* nameTwo, int distance);
 
 
 /* Removal functions */

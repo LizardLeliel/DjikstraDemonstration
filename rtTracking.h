@@ -3,7 +3,8 @@
 /* trTracking.c pretty much allows the program to reuse ids
  */
 
-typedef struct RemovedIDs {
+typedef struct RemovedIDs
+{
     int unused;
     struct RemovedIDs* next;
 } availableIDs;
