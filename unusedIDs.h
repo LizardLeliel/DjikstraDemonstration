@@ -10,6 +10,8 @@ typedef struct RemovedIDs
 } availableIDs;
 
 void idStackInit();
+void idStackDelete();
+
 void pushAvailableIDs(int n);
 unsigned int nextAvailableIDs();
 unsigned int returnHighestID();

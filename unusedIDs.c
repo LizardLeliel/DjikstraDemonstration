@@ -1,4 +1,4 @@
-#include "rtTracking.h"
+#include "unusedIDs.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -8,6 +8,22 @@ unsigned int nextAvailable;
 void idStackInit()
 {
     freeIDs = NULL;
+    nextAvailable = 0;
+}
+
+void idStackDelete()
+{
+    if (freeIDs != NULL) 
+    {
+        do
+        {
+            availableIDs* temp;
+            temp = freeIDs->next;
+            free(freeIDs);
+            freeIDs = temp;
+        } while (freeIDs != NULL);
+    }
+
     nextAvailable = 0;
 }
 

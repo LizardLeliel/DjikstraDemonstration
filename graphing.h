@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+typedef struct hashBucket hashBucket_t;
+
+typedef struct hash hash_t;
+
 typedef struct ConnectionNode
 {
     int id;
@@ -17,6 +21,15 @@ typedef struct VertexNode
     struct VertexNode* next;
 } graphNode;
 
+// Eventually we'll use this
+typedef struct graphNode
+{
+    hash_t* dictionary;
+    graphNode* head;
+} graph_t;
+
+// 
+unsigned int idFromName(graph_t* graph, char* name);
 
 
 /* Print functions */

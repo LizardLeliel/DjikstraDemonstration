@@ -1,10 +1,121 @@
 #include "graphing.h"
-#include "rtTracking.h"
+#include "unusedIDs.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
+
+#define HASH_ARRAY_SIZE 1000
+
+typedef struct hashBucket
+{
+    unsigned int id;
+    const char* symbol;
+    hashBucket_t* next; // for collisions
+} hashBucket_t;
+
+typedef struct hash
+{
+    //size_t hashSize; // Needed?
+    hashBucket_t** hashArray;
+} hash_t;
+
+
+static hash_t* newHash()
+{
+    hash_t* hash    = malloc(sizeof(hash_t));
+    hash->hashArray = calloc(HASH_ARRAY_SIZE, sizeof(hashBucket_t));
+    return hash;
+}
+
+static void freeHash(hash_t* hash)
+{
+    // Note the individual buckets will not be freed. Those will be freed
+    //  individually if a user deletes a node from the graph, or if the whole
+    //  graph's delete function is called (in which case as it deletes each node
+    //  it'll keep calling this function with the freeBucket)
+    free(hash->hashArray);
+    free(hash);
+}
+
+static unsigned int hashFunction(const char* symbol)
+{
+    unsigned int hash = 0;
+
+    while (*symbol != '\0')
+    {
+        hash = *symbol++ + (hash << 6) + (hash << 16) - hash;
+    } 
+
+    return hash;
+}
+
+static void addPair(hash_t* hash, const char* symbol, unsigned int id)
+{
+    unsigned int index = hashFunction(symbol) % HASH_ARRAY_SIZE;
+
+    if (hash->hashArray[index] == NULL)
+    {
+        hash->hashArray[index]         = malloc(sizeof(hashBucket_t));
+        hash->hashArray[index]->next   = NULL;
+        hash->hashArray[index]->id     = id;
+        hash->hashArray[index]->symbol = symbol;
+    }
+    else
+    {
+        hashBucket_t* newBucket = malloc(sizeof(hashBucket_t));
+        newBucket->id           = id;
+        newBucket->next         = hash->hashArray[index];
+        newBucket->symbol       = symbol;
+        hash->hashArray[index]  = newBucket;
+    }
+}
+
+static unsigned int getID(hash_t* hash, const char* symbol)
+{
+    unsigned int index    = hashFunction(symbol) % HASH_ARRAY_SIZE;
+    hashBucket_t* element = hash->hashArray[index];
+    while (element != NULL && strcmp(symbol, element->symbol) != 0)
+    {
+        element = element->next;
+    }
+
+    if (element == NULL) return 0;
+    else return element->id;
+}
+
+static bool freeBucket(hash_t* hash, const char* symbol)
+{
+    unsigned int index = hashFunction(symbol) % HASH_ARRAY_SIZE;
+
+    if (hash->hashArray[index] == NULL) return false;
+    else if (strcmp(hash->hashArray[index]->symbol, symbol) == 0)
+    {
+        hashBucket_t* temp     = hash->hashArray[index];
+        hash->hashArray[index] = hash->hashArray[index]->next;
+        free(temp);
+        return true;
+    }
+    else
+    {
+        hashBucket_t* search = hash->hashArray[index];
+        while (search->next != NULL && strcmp(search->next->symbol, symbol) != 0)
+        {
+            search = search->next;
+        } 
+
+        if (search->next == NULL) return false;
+        else
+        {
+            hashBucket_t* temp = search->next;
+            search->next       = search->next->next;
+            free(temp);
+            return true;
+        }
+    }
+}
+
 
 /* ==== Print functions ==== */
 void printConnections(adjNode* listHead)
