@@ -30,7 +30,7 @@ void insertIntoHeap(priorityHeap_t* heap, shortPathNode_t* element);
 shortPathNode_t* popHeap(priorityHeap_t* heap);
 bool heapIsEmpty(priorityHeap_t* heap);
 
-// The one function to worry about.
+// The djikstra functions. (graphNode is going to need to change to graph_t*)
 shortPathNode_t* djikstraAll(graphNode* graph, int from);
 void freeDjikstra(shortPathNode_t* results);
 

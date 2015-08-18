@@ -11,8 +11,8 @@
 typedef struct hashBucket
 {
     unsigned int id;
-    const char* symbol;
-    hashBucket_t* next; // for collisions
+    const char* symbol; // For collisions
+    hashBucket_t* next; //  if collision happens
 } hashBucket_t;
 
 typedef struct hash
@@ -72,7 +72,8 @@ static void addPair(hash_t* hash, const char* symbol, unsigned int id)
     }
 }
 
-static unsigned int getID(hash_t* hash, const char* symbol)
+
+unsigned int getID(hash_t* hash, const char* symbol)
 {
     unsigned int index    = hashFunction(symbol) % HASH_ARRAY_SIZE;
     hashBucket_t* element = hash->hashArray[index];
@@ -116,6 +117,10 @@ static bool freeBucket(hash_t* hash, const char* symbol)
     }
 }
 
+unsigned int getIDFromNAme(graph_t* graph, char* name)
+{
+    return getID(graph->dictionary, name);
+}
 
 /* ==== Print functions ==== */
 void printConnections(adjNode* listHead)
