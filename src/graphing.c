@@ -60,7 +60,7 @@ static void addPair(hash_t* hash, const char* symbol, unsigned int id)
 }
 
 
-static unsigned int getID(hash_t* hash, const char* symbol)
+static unsigned int searchID(hash_t* hash, const char* symbol)
 {
     unsigned int index    = hashFunction(symbol) % HASH_ARRAY_SIZE;
     hashBucket_t* element = hash->hashArray[index];
@@ -104,9 +104,9 @@ static bool freeBucket(hash_t* hash, const char* symbol)
     }
 }
 
-unsigned int getIDFromNAme(graph_t* graph, char* name)
+unsigned int getIDFromName(graph_t* graph, char* name)
 {
-    return getID(&(graph->dictionary), name);
+    return searchID(&(graph->dictionary), name);
 }
 
 static void initIDTracker(idTracker_t* idTracker)
@@ -133,15 +133,15 @@ static void deleteIDTracker(idTracker_t* idTracker)
     idTracker->reuseStack     = NULL;
 }
 
-static void pushUnusedIDs(idTracker_t* idTracker, unsigned int n)
+static void pushUnusedIDs(idTracker_t* idTracker, unsigned int id)
 {
     struct reuseStackNode* newNode = malloc(sizeof(struct reuseStackNode));
-    newNode->unusedID              = n;
+    newNode->unusedID              = id;
     newNode->next                  = idTracker->reuseStack;
     idTracker->reuseStack          = newNode;
 }
 
-static unsigned int newID(idTracker_t* idTracker)
+static unsigned int getNewID(idTracker_t* idTracker)
 {
     if (idTracker->reuseStack == NULL) return ++(idTracker->currentHighest);
     else
@@ -276,14 +276,18 @@ bool existantNamedVertex(graphNode* graphHead, const char* cstring)
 
 }
 
-int pushUniqueVertex(graphNode** graphHead, const char* cstring)
+int pushUniqueVertex(graph_t* graph, const char* name)
 {
-    if (existantNamedVertex(*graphHead, cstring)) return 1; /*Already exists*/
-    pushVertex(graphHead, nextAvailableIDs(), cstring);
+    //if (existantNamedVertex(*graphHead, cstring)) return 1; /*Already exists*/
+    if (searchID(&(graph->dictionary), name) != 0) return 1; // Already exists
+    unsigned int newID = getNewID(&(graph->idTracker));
+    pushVertex(&(graph->head), newID, name);
+    addPair(&(graph->dictionary), name, newID);
     return 0;
 }
 
-int linkVertices(graphNode* graphHead, int idOne, int idTwo, int distance)
+static int linkVertices(graphNode* graphHead, int idOne, int idTwo, 
+      unsigned int distance)
 {
     if (idOne == idTwo) return 1; /* Same nodes */
     adjNode** head1 = NULL;
@@ -291,7 +295,7 @@ int linkVertices(graphNode* graphHead, int idOne, int idTwo, int distance)
 
     while (!(head1 && head2))
     {
-        if (graphHead == NULL) return 2;/*graphHead reaches end: node ! found*/
+        if (graphHead == NULL) return 4;/*graphHead reaches end: node ! found*/
 
         if (graphHead->id == idOne)
             head1 = &(graphHead->adjHead);
@@ -305,33 +309,38 @@ int linkVertices(graphNode* graphHead, int idOne, int idTwo, int distance)
     return 0;
 }
 
-int linkByName(graphNode* graphHead, const char* nameOne, const char* nameTwo,
-               int distance)
+int linkByName(graph_t* graph, const char* nameOne, const char* nameTwo,
+  unsigned int distance)
 {
-    if (!strcmp(nameOne, nameTwo)) return 1; /* Same nodes */
-    int idOne = 0, idTwo = 0;
-    adjNode** head1 = NULL;
-    adjNode** head2 = NULL;
+    //if (!strcmp(nameOne, nameTwo)) return 1; /* Same nodes */
+    unsigned int idOne, idTwo;
+    //adjNode** head1 = NULL;
+    //adjNode** head2 = NULL;
+    idOne = searchID(&(graph->dictionary), nameOne);
+    idTwo = searchID(&(graph->dictionary), nameTwo);
+    if (idOne == 0) return 2;
+    if (idTwo == 0) return 3;
 
-    while (!(idOne && idTwo))
-    {
-        if (graphHead == NULL) return 2;//graphHead reaches end: node ! found
+    return linkVertices(graph->head, idOne, idTwo, distance);
+    // while (!(idOne && idTwo))
+    // {
+    //     if (graphHead == NULL) return 2;//graphHead reaches end: node ! found
 
-        if (!(strcmp(nameOne, graphHead->name)))
-        {
-            head1 = &(graphHead->adjHead);
-            idOne = graphHead->id;
-        }
-        if (!(strcmp(nameTwo, graphHead->name)))
-        {
-            head2 = &(graphHead->adjHead);
-            idTwo = graphHead->id;
-        }
+    //     if (!(strcmp(nameOne, graphHead->name)))
+    //     {
+    //         head1 = &(graphHead->adjHead);
+    //         idOne = graphHead->id;
+    //     }
+    //     if (!(strcmp(nameTwo, graphHead->name)))
+    //     {
+    //         head2 = &(graphHead->adjHead);
+    //         idTwo = graphHead->id;
+    //     }
 
-        graphHead = graphHead->next;
-    }
-    pushSortedAdjNode(head1, idTwo, distance);
-    pushSortedAdjNode(head2, idOne, distance);
+    //     graphHead = graphHead->next;
+    // }
+    // pushSortedAdjNode(head1, idTwo, distance);
+    // pushSortedAdjNode(head2, idOne, distance);
     return 0;
 }
 

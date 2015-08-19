@@ -1,4 +1,6 @@
 #ifndef GRAPHING_HEADER
+#define GRAPHING_HEADER
+
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -16,14 +18,14 @@ typedef struct hash
 
 typedef struct ConnectionNode
 {
-    int id;
-    int distance;
+    unsigned int id;
+    unsigned int distance;
     struct ConnectionNode* next;
 } adjNode;
 
 typedef struct VertexNode
 {
-    int id;
+    unsigned int id;
     char* name;
     adjNode* adjHead;
     struct VertexNode* next;
@@ -48,9 +50,15 @@ typedef struct graph
     graphNode* head;
 } graph_t;
 
+// Note for me (ignore this):
+// pushUnusedIDs();
+// getNewID(idTracker* idTracker);
+// searchID(hash_t* hash, const char* symbol);
+// addPair(hash_t* hash, string, unsigned int);
+
 // Get the string's corresponding ID (looks it up in the hash)
 unsigned int getIDFromName(graph_t* graph, char* name);
-unsigned int getHighestID(graph_t* graph);
+unsigned int highestID(graph_t* graph);
 void initGraph(graph_t* graph);
 
 // Printing graph information - change to use graph_t
@@ -60,23 +68,27 @@ void printEveryVertex(graphNode* graphHead);
 void printEverything(graphNode* graphHead);
 
 // Basic pushing 
-void pushAdjNode(adjNode** listHead, int newID, int newDistance); // Delete?
-void pushSortedAdjNode(adjNode** listHead, int newID, int newDistance); // Static?
-void pushVertex(graphNode** graphHead, int newID, const char* cstring); // static?
+// Delete?
+void pushAdjNode(adjNode** listHead, int newID, int newDistance); 
+// Static?
+void pushSortedAdjNode(adjNode** listHead, int newID, int newDistance); 
+// Static?
+void pushVertex(graphNode** graphHead, int newID, const char* cstring); 
 
 // Existance checking - May get deleted, since most functions
 //  need to get an id anyways so it'll be a lot of (if (x = getID() != 0)
-bool existantNamedVertex(graphNode* graphHead, const char* cstring);
+//bool existantNamedVertex(graphNode* graphHead, const char* cstring);
 
 // Implementation functions - start with these
-int pushUniqueVertex(graphNode** graphHead, const char* cstring); 
-int linkVertices(graphNode* head, int idOne, int idTwo, int distance); // static
-int linkByName(graphNode* head, const char* nameOne,
-               const char* nameTwo, int distance); // "rename"
+int pushUniqueVertex(graph_t* graph, const char* name); 
+// static
+//int linkVertices(graphNode* head, int idOne, int idTwo, int distance); // static
+int linkByName(graph_t* graphHead, const char* nameOne,
+  const char* nameTwo, unsigned int distance); // "rename"
 
 
 
-// removal functions - don't worry about these too much
+// removal functions
 bool deleteNode(adjNode** head, int id);
 int severIDLink(graphNode* graphHead, int idOne, int idTwo); // static?
 int severNamedLink(graphNode* head, const char* name1, const char* name2);
@@ -86,5 +98,5 @@ int deleteVertexAndLinks(graphNode** graphHead, const char* target);
 void deleteGraph(graph_t* graph);
 
 
-#define GRAPHING_HEADER
+// GRAPHING_HEADER
 #endif

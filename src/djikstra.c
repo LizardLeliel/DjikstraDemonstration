@@ -1,16 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <limits.h> /* UINT_MAX */
+#include <limits.h> // UINT_MAX 
 
 #include "djikstra.h"
 #include "graphing.h"
 #include "unusedIDs.h"
 
-// These two are going to need to change
-//shortPathNode_t* heapArray;
-// pqueue_t* nodeQueue;
-// Replace 90000 with int max.
-// shortPathNode_t dummy = {NULL, NULL, UINT_MAX, NULL};
 
 priorityHeap_t* newHeap()
 {
@@ -141,8 +136,8 @@ inline bool heapIsEmpty(priorityHeap_t* heap)
 }
 
 // Initializing helper function
-static shortPathNode_t* initDjikstra(graphNode* graph, int from,
-  priorityHeap_t** heap)
+static shortPathNode_t* initDjikstra(graphNode* graph, unsigned int from,
+  unsigned int highestID, priorityHeap_t** heap)
 {
     /* build reference array */
     shortPathNode_t* shortestPaths;
@@ -173,10 +168,11 @@ static shortPathNode_t* initDjikstra(graphNode* graph, int from,
 
 
 // Find ALL the shortest paths!
-shortPathNode_t* djikstraAll(graphNode* graph, int from)
+shortPathNode_t* djikstraAll(graph_t* graph, unsigned int from)
 {
     priorityHeap_t*  heap;
-    shortPathNode_t* shortestPaths = initDjikstra(graph, from, &heap);
+    shortPathNode_t* shortestPaths = initDjikstra(graph->head, 
+        from, highestID(graph), &heap);
 
     // While there are unchecked nodes
     while (!heapIsEmpty(heap))
