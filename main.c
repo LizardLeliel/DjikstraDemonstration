@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "graphing.h"
-#include "debugExamples.h"
+//#include "debugExamples.h"
 #include "unusedIDs.h"
 
 int main()

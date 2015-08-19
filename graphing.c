@@ -8,25 +8,12 @@
 
 #define HASH_ARRAY_SIZE 1000
 
-typedef struct hashBucket
-{
-    unsigned int id;
-    const char* symbol; // For collisions
-    hashBucket_t* next; //  if collision happens
-} hashBucket_t;
-
-typedef struct hash
-{
-    //size_t hashSize; // Needed?
-    hashBucket_t** hashArray;
-} hash_t;
 
 
-static hash_t* newHash()
+
+inline static void initHash(hash_t* hash)
 {
-    hash_t* hash    = malloc(sizeof(hash_t));
     hash->hashArray = calloc(HASH_ARRAY_SIZE, sizeof(hashBucket_t));
-    return hash;
 }
 
 static void freeHash(hash_t* hash)
@@ -73,7 +60,7 @@ static void addPair(hash_t* hash, const char* symbol, unsigned int id)
 }
 
 
-unsigned int getID(hash_t* hash, const char* symbol)
+static unsigned int getID(hash_t* hash, const char* symbol)
 {
     unsigned int index    = hashFunction(symbol) % HASH_ARRAY_SIZE;
     hashBucket_t* element = hash->hashArray[index];
@@ -119,8 +106,69 @@ static bool freeBucket(hash_t* hash, const char* symbol)
 
 unsigned int getIDFromNAme(graph_t* graph, char* name)
 {
-    return getID(graph->dictionary, name);
+    return getID(&(graph->dictionary), name);
 }
+
+static void initIDTracker(idTracker_t* idTracker)
+{
+    idTracker->currentHighest = 0;
+    idTracker->reuseStack = NULL;
+    //size_t size = sizeof *(idTracker->reuseStack);
+}
+
+static void deleteIDStack(struct reuseStackNode* stack)
+{
+    if (stack == NULL) return;
+    else
+    {
+        deleteIDStack(stack->next);
+        free(stack);
+    }
+}
+
+static void deleteIDTracker(idTracker_t* idTracker)
+{
+    idTracker->currentHighest = 0;
+    deleteIDStack(idTracker->reuseStack);
+    idTracker->reuseStack     = NULL;
+}
+
+static void pushUnusedIDs(idTracker_t* idTracker, unsigned int n)
+{
+    struct reuseStackNode* newNode = malloc(sizeof(struct reuseStackNode));
+    newNode->unusedID              = n;
+    newNode->next                  = idTracker->reuseStack;
+    idTracker->reuseStack          = newNode;
+}
+
+static unsigned int newID(idTracker_t* idTracker)
+{
+    if (idTracker->reuseStack == NULL) return ++(idTracker->currentHighest);
+    else
+    {
+        struct reuseStackNode* temp = idTracker->reuseStack;
+        unsigned int returnVal      = temp->unusedID;
+        idTracker->reuseStack       = temp->next;
+        free(temp);
+
+        return returnVal;
+    }
+}
+
+inline unsigned int highestID(graph_t* graph)
+{
+    return graph->idTracker.currentHighest;
+}
+
+void initGraph(graph_t* graph)
+{
+    initHash(&(graph->dictionary));
+    initIDTracker(&(graph->idTracker));
+    graph->head = NULL;
+}
+
+
+
 
 /* ==== Print functions ==== */
 void printConnections(adjNode* listHead)
@@ -158,6 +206,10 @@ void printEverything(graphNode* graphHead)
     }
 
 }
+
+
+
+
 
 /* ==== Basic pushing ==== */
 void pushAdjNode(adjNode** listHead, int newID, int newDistance)
